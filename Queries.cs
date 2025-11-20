@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace EFCore.Data
 {
-    public static class Queries
+    public static partial class Queries
     {
         // Get products with their category and supplier information
-        public static async Task<List<Product>> GetProductsWithDetails(ApplicationDbContext context)
+        public static async Task<List<Product>> GetProductsWithDetailsAsync(ApplicationDbContext context)
         {
             return await context.Products
                 .Include(p => p.Category)
@@ -20,7 +20,7 @@ namespace EFCore.Data
         }
 
         // Get category hierarchy
-        public static async Task<List<Category>> GetCategoryHierarchy(ApplicationDbContext context)
+        public static async Task<List<Category>> GetCategoryHierarchyAsync(ApplicationDbContext context)
         {
             return await context.Categories
                 .Include(c => c.SubCategories)
@@ -29,7 +29,7 @@ namespace EFCore.Data
         }
 
         // Get products by category
-        public static async Task<List<Product>> GetProductsByCategory(ApplicationDbContext context, int categoryId)
+        public static async Task<List<Product>> GetProductsByCategoryAsync(ApplicationDbContext context, int categoryId)
         {
             return await context.Products
                 .Include(p => p.Category)
@@ -39,7 +39,7 @@ namespace EFCore.Data
         }
 
         // Get recently created products
-        public static async Task<List<Product>> GetRecentlyCreatedProducts(ApplicationDbContext context, int count = 10)
+        public static async Task<List<Product>> GetRecentlyCreatedProductsAsync(ApplicationDbContext context, int count = 10)
         {
             return await context.Products
                 .Include(p => p.Category)
@@ -49,7 +49,7 @@ namespace EFCore.Data
         }
 
         // Get product history
-        public static async Task<List<ProductHistory>> GetProductHistory(ApplicationDbContext context, int productId)
+        public static async Task<List<ProductHistory>> GetProductHistoryAsync(ApplicationDbContext context, int productId)
         {
             return await context.ProductHistory
                 .Where(h => h.ProductId == productId)
@@ -57,19 +57,8 @@ namespace EFCore.Data
                 .ToListAsync();
         }
 
-        // Get products with low stock
-        public static async Task<List<Product>> GetLowStockProducts(ApplicationDbContext context, int threshold = 10)
-        {
-            return await context.Products
-                .Include(p => p.Category)
-                .Include(p => p.Supplier)
-                .Where(p => p.StockQuantity <= threshold)
-                .OrderBy(p => p.StockQuantity)
-                .ToListAsync();
-        }
-
         // Get products by price range
-        public static async Task<List<Product>> GetProductsByPriceRange(ApplicationDbContext context, decimal minPrice, decimal maxPrice)
+        public static async Task<List<Product>> GetProductsByPriceRangeAsync(ApplicationDbContext context, decimal minPrice, decimal maxPrice)
         {
             return await context.Products
                 .Include(p => p.Category)
@@ -79,7 +68,7 @@ namespace EFCore.Data
         }
 
         // Get supplier performance (number of products supplied)
-        public static async Task<List<Supplier>> GetSupplierPerformance(ApplicationDbContext context)
+        public static async Task<List<Supplier>> GetSupplierPerformanceAsync(ApplicationDbContext context)
         {
             return await context.Suppliers
                 .Include(s => s.Products)
@@ -88,7 +77,7 @@ namespace EFCore.Data
         }
 
         // Get category statistics (number of products per category)
-        public static async Task<List<Category>> GetCategoryStatistics(ApplicationDbContext context)
+        public static async Task<List<Category>> GetCategoryStatisticsAsync(ApplicationDbContext context)
         {
             return await context.Categories
                 .Include(c => c.Products)
@@ -96,4 +85,4 @@ namespace EFCore.Data
                 .ToListAsync();
         }
     }
-} 
+}
