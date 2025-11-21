@@ -3,8 +3,13 @@ using EFCore.Models;
 
 namespace EFCore.Data
 {
-    public class ApplicationDbContext : DbContext
+    public partial class ApplicationDbContext : DbContext
     {
+        static ApplicationDbContext()
+        {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -48,6 +53,10 @@ namespace EFCore.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             // ProductStats is now a standalone table, no relationship configuration needed
+
+            // Configure boolean to integer conversions for PostgreSQL
+            modelBuilder.Entity<Product>().Property(p => p.IsDiscontinued).HasConversion<int>();
+            modelBuilder.Entity<Supplier>().Property(s => s.IsActive).HasConversion<int>();
         }
     }
-} 
+}

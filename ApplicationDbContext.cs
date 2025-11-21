@@ -3,23 +3,12 @@ using EFCore.Models;
 
 namespace EFCore.Data
 {
-    public class ApplicationDbContext : DbContext
+    public partial class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder)
         {
-        }
-
-        public DbSet<Product> Products { get; set; }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<Supplier> Suppliers { get; set; }
-        public DbSet<ProductHistory> ProductHistory { get; set; }
-        public DbSet<ProductStats> ProductStats { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
             // Configure Category self-referencing relationship
             modelBuilder.Entity<Category>()
                 .HasOne(c => c.ParentCategory)
@@ -48,6 +37,10 @@ namespace EFCore.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             // ProductStats is now a standalone table, no relationship configuration needed
+
+            // Configure boolean to integer conversions for PostgreSQL
+            modelBuilder.Entity<Product>().Property(p => p.IsDiscontinued).HasConversion<int>();
+            modelBuilder.Entity<Supplier>().Property(s => s.IsActive).HasConversion<int>();
         }
     }
-} 
+}
