@@ -1,3 +1,4 @@
+﻿using System;
 using Microsoft.EntityFrameworkCore;
 using EFCore.Models;
 
@@ -5,6 +6,11 @@ namespace EFCore.DataAccess
 {
     public class ProductDbContext : DbContext
     {
+        static ProductDbContext()
+        {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        }
+
         public ProductDbContext(DbContextOptions<ProductDbContext> options) : base(options)
         {
         }
@@ -15,7 +21,7 @@ namespace EFCore.DataAccess
         {
             modelBuilder.Entity<Product>(entity =>
             {
-                entity.ToTable("Products");
+                entity.ToTable("products", schema: "productmanagement_dbo");
                 entity.HasKey(p => p.ProductId);
 
                 entity.Property(p => p.ProductId)
@@ -31,6 +37,9 @@ namespace EFCore.DataAccess
                 entity.Property(p => p.Price)
                     .HasColumnType("decimal(18,2)");
             });
+
+            // Configure boolean to integer conversions for PostgreSQL compatibility
+            modelBuilder.Entity<Product>().Property(e => e.IsDiscontinued).HasConversion<int>();
 
             base.OnModelCreating(modelBuilder);
         }
