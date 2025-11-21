@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using EFCore.Business;
@@ -42,7 +42,7 @@ namespace EFCore
         {
             // Add DbContext
             services.AddDbContext<ProductDbContext>(options =>
-                options.UseSqlServer(_configuration.GetConnectionString("DevConnection")));
+                options.UseNpgsql(_configuration.GetConnectionString("DevConnection")));
 
             // Add services
             services.AddScoped<ProductService>();
