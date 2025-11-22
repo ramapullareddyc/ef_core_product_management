@@ -1,21 +1,21 @@
+using System;
 using Microsoft.EntityFrameworkCore;
 using EFCore.Models;
 
 namespace EFCore.DataAccess
 {
-    public class ProductDbContext : DbContext
+    public partial class ProductDbContext : DbContext
     {
-        public ProductDbContext(DbContextOptions<ProductDbContext> options) : base(options)
-        {
-        }
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+    }
 
-        public DbSet<Product> Products { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+    public partial class ProductDbContext
+    {
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>(entity =>
             {
-                entity.ToTable("Products");
+                entity.ToTable("products", schema: "productmanagement_dbo");
                 entity.HasKey(p => p.ProductId);
 
                 entity.Property(p => p.ProductId)
@@ -32,7 +32,8 @@ namespace EFCore.DataAccess
                     .HasColumnType("decimal(18,2)");
             });
 
-            base.OnModelCreating(modelBuilder);
+            // Boolean property conversions for PostgreSQL
+            modelBuilder.Entity<Product>().Property(p => p.IsDiscontinued).HasConversion<int>();
         }
     }
-} 
+}
