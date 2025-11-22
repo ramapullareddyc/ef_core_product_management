@@ -1,38 +1,19 @@
+using System;
 using Microsoft.EntityFrameworkCore;
 using EFCore.Models;
 
 namespace EFCore.DataAccess
 {
-    public class ProductDbContext : DbContext
+    public partial class ProductDbContext : DbContext
     {
-        public ProductDbContext(DbContextOptions<ProductDbContext> options) : base(options)
+        private static readonly bool _timestampBehaviorSet = SetLegacyTimestampBehavior();
+
+        private static bool SetLegacyTimestampBehavior()
         {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+            return true;
         }
 
-        public DbSet<Product> Products { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Product>(entity =>
-            {
-                entity.ToTable("Products");
-                entity.HasKey(p => p.ProductId);
-
-                entity.Property(p => p.ProductId)
-                    .ValueGeneratedOnAdd();
-
-                entity.Property(p => p.Name)
-                    .IsRequired()
-                    .HasMaxLength(100);
-
-                entity.Property(p => p.Description)
-                    .HasMaxLength(500);
-
-                entity.Property(p => p.Price)
-                    .HasColumnType("decimal(18,2)");
-            });
-
-            base.OnModelCreating(modelBuilder);
-        }
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
-} 
+}
