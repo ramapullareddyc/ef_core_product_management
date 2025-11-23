@@ -1,10 +1,16 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using EFCore.Models;
+using System;
 
 namespace EFCore.Data
 {
     public class ApplicationDbContext : DbContext
     {
+        static ApplicationDbContext()
+        {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -19,6 +25,10 @@ namespace EFCore.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // Configure boolean to integer conversions for PostgreSQL
+            modelBuilder.Entity<Product>().Property(e => e.IsDiscontinued).HasConversion<int>();
+            modelBuilder.Entity<Supplier>().Property(e => e.IsActive).HasConversion<int>();
 
             // Configure Category self-referencing relationship
             modelBuilder.Entity<Category>()
