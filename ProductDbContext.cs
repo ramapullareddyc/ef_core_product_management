@@ -3,15 +3,11 @@ using EFCore.Models;
 
 namespace EFCore.DataAccess
 {
-    public class ProductDbContext : DbContext
+    public partial class ProductDbContext : DbContext
     {
-        public ProductDbContext(DbContextOptions<ProductDbContext> options) : base(options)
-        {
-        }
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 
-        public DbSet<Product> Products { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>(entity =>
             {
@@ -31,8 +27,6 @@ namespace EFCore.DataAccess
                 entity.Property(p => p.Price)
                     .HasColumnType("decimal(18,2)");
             });
-
-            base.OnModelCreating(modelBuilder);
         }
     }
-} 
+}

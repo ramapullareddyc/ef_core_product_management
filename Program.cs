@@ -5,6 +5,7 @@ using EFCore.Business;
 using EFCore.Models;
 using EFCore.CLI;
 using EFCore.DataAccess;
+using Microsoft.EntityFrameworkCore.SqlServer;
 
 namespace EFCore
 {
@@ -235,4 +236,4 @@ namespace EFCore
             }
         }
     }
-} 
+}
