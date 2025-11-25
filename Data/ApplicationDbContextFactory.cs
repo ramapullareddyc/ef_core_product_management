@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
+using System.Reflection;
 
 namespace EFCore.Data
 {
@@ -17,7 +18,16 @@ namespace EFCore.Data
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             optionsBuilder.UseSqlServer(connectionString);
 
-            return new ApplicationDbContext(optionsBuilder.Options);
+            var contextType = typeof(ApplicationDbContext);
+            var constructors = contextType.GetConstructors();
+            var constructor = constructors.First(c =>
+            {
+                var parameters = c.GetParameters();
+                return parameters.Length == 1 &&
+                       parameters[0].ParameterType == typeof(DbContextOptions<ApplicationDbContext>);
+            });
+
+            return (ApplicationDbContext)constructor.Invoke(new object[] { optionsBuilder.Options });
         }
     }
-} 
+}
