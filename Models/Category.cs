@@ -1,21 +1,26 @@
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EFCore.Models
 {
-    [Table("Categories")]
+    [Table("categories", Schema = "public")]
     public class Category
     {
         [Key]
+        [Column("categoryid")]
         public int CategoryId { get; set; }
 
         [Required]
         [StringLength(50)]
+        [Column("name")]
         public string Name { get; set; }
 
         [StringLength(200)]
+        [Column("description")]
         public string Description { get; set; }
 
+        [Column("parentcategoryid")]
         public int? ParentCategoryId { get; set; }
 
         [ForeignKey("ParentCategoryId")]
@@ -24,6 +29,7 @@ namespace EFCore.Models
         public ICollection<Category> SubCategories { get; set; }
         public ICollection<Product> Products { get; set; }
 
+        [Column("createddate")]
         public DateTime CreatedDate { get; set; }
     }
 } 
