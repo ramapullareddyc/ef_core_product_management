@@ -3,19 +3,8 @@ using EFCore.Models;
 
 namespace EFCore.Data
 {
-    public class ApplicationDbContext : DbContext
+    public partial class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
-        {
-        }
-
-        public DbSet<Product> Products { get; set; }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<Supplier> Suppliers { get; set; }
-        public DbSet<ProductHistory> ProductHistory { get; set; }
-        public DbSet<ProductStats> ProductStats { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -48,6 +37,10 @@ namespace EFCore.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             // ProductStats is now a standalone table, no relationship configuration needed
+
+            OnModelCreatingPartial(modelBuilder);
         }
+
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
-} 
+}
