@@ -42,7 +42,7 @@ namespace EFCore
         {
             // Add DbContext
             services.AddDbContext<ProductDbContext>(options =>
-                options.UseSqlServer(_configuration.GetConnectionString("DevConnection")));
+                options.UseNpgsql(_configuration.GetConnectionString("DevConnection")));
 
             // Add services
             services.AddScoped<ProductService>();
@@ -235,4 +235,4 @@ namespace EFCore
             }
         }
     }
-} 
+}
