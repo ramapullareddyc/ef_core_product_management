@@ -18,12 +18,12 @@ namespace EFCore.Business
 
         public List<Product> GetAllProducts()
         {
-            return _context.Products.ToList();
+            return _context.Set<Product>().ToList();
         }
 
         public Product GetProduct(int productId)
         {
-            return _context.Products.Find(productId);
+            return _context.Set<Product>().Find(productId);
         }
 
         public int CreateProduct(Product product)
@@ -37,7 +37,7 @@ namespace EFCore.Business
             if (product.StockQuantity < 0)
                 throw new ArgumentException("Stock quantity cannot be negative.");
 
-            _context.Products.Add(product);
+            _context.Set<Product>().Add(product);
             _context.SaveChanges();
             return product.ProductId;
         }
@@ -59,10 +59,10 @@ namespace EFCore.Business
 
         public void DeleteProduct(int productId)
         {
-            var product = _context.Products.Find(productId);
+            var product = _context.Set<Product>().Find(productId);
             if (product != null)
             {
-                _context.Products.Remove(product);
+                _context.Set<Product>().Remove(product);
                 _context.SaveChanges();
             }
         }
@@ -72,7 +72,7 @@ namespace EFCore.Business
             if (newQuantity < 0)
                 throw new ArgumentException("Stock quantity cannot be negative.");
 
-            var product = _context.Products.Find(productId);
+            var product = _context.Set<Product>().Find(productId);
             if (product == null)
                 throw new ArgumentException($"Product with ID {productId} not found.");
 
@@ -80,4 +80,4 @@ namespace EFCore.Business
             _context.SaveChanges();
         }
     }
-} 
+}
